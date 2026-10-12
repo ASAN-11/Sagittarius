@@ -4,7 +4,7 @@
 
 Sagittarius is a local-first outdoor companion that runs in a single HTML file. It checks the sky, plans an outing, answers field questions with an open-weight model running on your own machine, and then asks you to close the laptop. The screen should be the shortest part of the experience.
 
-Built for the **Touch Grass** open-source AI challenge.
+Built for the **Touch Grass** [Hacktoberfest Open-Source AI Challenge Week 1: Touch Grass](https://dev.to/challenges/hacktoberfest-week1-2026-10-05).
 
 ![sagittarius screenshot](screenshot.png)
 
