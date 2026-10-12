@@ -6,6 +6,9 @@ Sagittarius is a local-first outdoor companion that runs in a single HTML file. 
 
 Built for the **Touch Grass** open-source AI challenge.
 
+![sagittarius screenshot](screenshot.png)
+
+
 ## Features
 
 - **Outing planner**: gets the forecast for your location (temperature, rain chance, wind, UV, sunrise and sunset) and gives a plan for a hike, run, birding trip, foliage photography, gardening, a picnic or a walk. It works from simple built-in rules, and when the local model is running it writes a fuller plan.
