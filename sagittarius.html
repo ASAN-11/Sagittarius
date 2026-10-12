@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sagittarius — step outside with open AI</title>
+<style>
+:root{color-scheme:light;--ink:#0e0b3a;--sky:#f1ecf8;--mist:#fcf8f4;--paper:#ffffff;--line:#e7e0ee;--sun:#7a4df0;--coral:#4f1fd8;--dusk:#2a1d8f;--tx:#1a1740;--soft:#5d5a7d;--side:264px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--mist)}
+body{margin:0;padding-left:var(--side);transition:padding .25s;font:17px/1.6 Inter,"Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;color:var(--tx);background:var(--mist) radial-gradient(circle at 1px 1px,rgba(79,31,216,.07) 1px,transparent 0) 0 0/26px 26px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;font-weight:800;letter-spacing:-.035em;line-height:1.04;margin:0 0 .5em}
+h1{font-size:clamp(2.8rem,8vw,6.2rem)}
+h2{font-size:clamp(1.9rem,4vw,3rem)}
+h3{font-size:1.2rem;letter-spacing:-.02em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.media{position:relative;overflow:hidden;background:linear-gradient(180deg,#0f0c4a 0%,#2a1d8f 45%,#6b4fc9 80%,#b9a6ee 100%)}
+.media>.mbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.media>.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,48,.35),rgba(10,8,48,.5));z-index:1}
+.media>.inner{position:relative;z-index:3}
+.setbg{position:absolute;right:16px;top:16px;z-index:4;font-size:13px;padding:7px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);backdrop-filter:blur(8px);color:#fff;cursor:pointer}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+.side{position:fixed;left:0;top:0;bottom:0;width:var(--side);z-index:40;display:flex;flex-direction:column;color:#fff;background:linear-gradient(180deg,#0d0a45 0%,#1f1580 40%,#4a37b0 75%,#5b47c4 100%);overflow:hidden;transition:width .25s,transform .25s}
+.side>*{position:relative;z-index:2}
+.side .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:46%;z-index:1;opacity:.85}
+.brand{text-align:center;padding:34px 12px 22px;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-user-drag:none;cursor:default}
+.brand svg{width:46px;height:46px;display:block;margin:0 auto 12px;pointer-events:none}
+.brand .wm{font-weight:800;font-size:1.2rem;letter-spacing:.34em;padding-left:.34em;white-space:nowrap}
+.brand .sub{font-size:11px;font-weight:700;letter-spacing:.3em;padding-left:.3em;opacity:.85;margin-top:4px;white-space:nowrap}
+.menu{display:flex;flex-direction:column;gap:6px;padding:18px 20px}
+.menu a{display:flex;align-items:center;gap:16px;padding:13px 16px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;color:#fff;white-space:nowrap}
+.menu a svg{width:21px;height:21px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.menu a:hover{background:rgba(255,255,255,.12)}
+.menu a.on{background:#e9eef6;color:var(--ink)}
+.collapse{margin-top:auto;display:flex;align-items:center;gap:10px;justify-content:center;padding:18px;background:none;border:0;color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;opacity:.9}
+.collapse svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;transition:transform .25s}
+.menuBtn{display:none;position:fixed;top:12px;left:12px;z-index:50;width:44px;height:44px;border-radius:12px;border:0;background:#1f1580;color:#fff;font-size:22px;cursor:pointer}
+body.min{--side:84px}
+body.min .brand .wm,body.min .brand .sub,body.min .menu a span,body.min .collapse span{display:none}
+body.min .brand svg{width:34px;height:34px}
+body.min .brand{padding:30px 6px 16px}
+body.min .menu{padding:18px 12px}
+body.min .menu a{justify-content:center;padding:13px 0}
+body.min .collapse svg{transform:rotate(180deg)}
+@media (max-width:820px){body,body.min{padding-left:0}.menuBtn{display:block}.side,body.min .side{width:264px;transform:translateX(-100%)}body.open .side{transform:none}body.min .brand .wm,body.min .brand .sub,body.min .menu a span,body.min .collapse span{display:inline}body.min .menu a{justify-content:flex-start;padding:13px 16px}.collapse{display:none}.hero{padding-top:80px}}
+.hero{min-height:100vh;display:flex;align-items:center;color:#fff;padding:120px 0 190px;text-align:center}
+.hero .wrap{display:flex;flex-direction:column;align-items:center}
+.hero p{max-width:50ch;font-size:1.2rem;color:#fff}
+.tag{display:inline-block;padding:6px 16px;border-radius:99px;font-size:14px;font-weight:600;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(8px);margin-bottom:22px}
+.mtn{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:170px;z-index:2;display:block}
+.btn{display:inline-block;border:0;border-radius:99px;padding:12px 24px;font:inherit;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--sun),var(--coral));color:#fff;text-decoration:none;box-shadow:0 6px 18px rgba(79,31,216,.32)}
+.btn:hover{filter:brightness(1.06)}
+.btn.alt{background:rgba(255,255,255,.14);color:inherit;border:1.5px solid currentColor;box-shadow:none}
+.card .btn.alt{color:var(--ink);background:transparent}
+.btn:disabled{opacity:.5;cursor:wait}
+section{padding:84px 0}
+.dark{color:#fff}
+.dark h2{text-shadow:0 2px 20px rgba(0,0,0,.25)}
+.grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:26px;color:var(--tx);box-shadow:0 12px 36px rgba(20,33,61,.08)}
+label{display:block;font-weight:700;font-size:14px;margin:14px 0 5px;color:var(--ink)}
+input,select,textarea{width:100%;font:inherit;padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--mist);color:var(--tx)}
+input:focus,select:focus,textarea:focus{border-color:var(--sun);background:#fff}
+.row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1 1 140px}
+.out{margin-top:16px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#f4efff,#ece4ff);border:1px solid #d9cbf7;white-space:pre-wrap}
+.pill{display:inline-block;padding:4px 14px;border-radius:99px;font-size:13px;font-weight:700;background:#dff3e4;color:#17603a}
+.pill.off{background:#ffe3d6;color:#9a3412}
+.chat{height:340px;overflow-y:auto;background:var(--mist);border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--tx)}
+.msg{margin:0 0 12px;white-space:pre-wrap}.msg.u{color:var(--coral);font-weight:700}
+.crop{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.crop:last-child{border:0}
+.j{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.j img{width:84px;height:84px;object-fit:cover;border-radius:12px}
+.j small{color:var(--soft)}
+.timer{font-size:3.2rem;font-weight:800;letter-spacing:-.04em}
+code{background:#eaf0f8;padding:2px 7px;border-radius:6px;font-size:.88em}
+#plan,#garden,#journal{background:transparent}
+footer{background:var(--sky);color:var(--soft);padding:44px 0;font-size:15px;border-top:1px solid var(--line)}
+footer b{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<button class="menuBtn" id="menuBtn" aria-label="Open menu">☰</button>
+<aside class="side" id="side" aria-label="Main">
+  <div class="brand" draggable="false">
+    <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 38 L38 10"/><path d="M24 10 H38 V24"/><path d="M15 25 L23 33"/><circle cx="38" cy="10" r="1.6" fill="#fff"/></svg>
+    <div class="wm">SAGITTARIUS</div><div class="sub">OPEN AI · OUTDOORS</div>
+  </div>
+  <nav class="menu">
+    <a href="#top" data-s="top" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Home</span></a>
+    <a href="#plan" data-s="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Plan</span></a>
+    <a href="#guide" data-s="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.2A8 8 0 1 1 21 12z"/></svg><span>Guide</span></a>
+    <a href="#garden" data-s="garden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14z"/><path d="M5 19c2-4 5-7 9-9"/></svg><span>Garden</span></a>
+    <a href="#journal" data-s="journal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg><span>Journal</span></a>
+    <a href="#why" data-s="why"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Why open</span></a>
+  </nav>
+  <svg class="scene" viewBox="0 0 264 300" preserveAspectRatio="none" aria-hidden="true"><path fill="#7a67d1" opacity=".55" d="M0 150 L70 90 L110 120 L170 40 L230 110 L264 90 V300 H0Z"/><path fill="#2c2192" opacity=".9" d="M0 200 L40 170 L80 190 L130 140 L190 185 L264 150 V300 H0Z"/><g fill="#150f5c"><path d="M12 300V250l-8 0 14-30-6 0 12-28 12 28-6 0 14 30-8 0v50z"/><path d="M60 300V262l-7 0 12-26-5 0 11-24 11 24-5 0 12 26-7 0v38z"/><path d="M200 300V240l-9 0 15-32-7 0 14-32 14 32-7 0 15 32-9 0v60z"/><path d="M240 300V268l-6 0 10-22-4 0 9-20 9 20-4 0 10 22-6 0v32z"/></g></svg>
+  <button class="collapse" id="collapse" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><span>Collapse</span></button>
+</aside>
+
+<header class="media hero" data-media="hero" id="top">
+  <div class="shade"></div>
+  <svg class="mtn" viewBox="0 0 1440 170" preserveAspectRatio="none" aria-hidden="true"><path fill="#cdc3ee" opacity=".55" d="M0 110 L180 40 L330 100 L520 20 L720 95 L900 35 L1100 105 L1280 50 L1440 100 V170 H0Z"/><path fill="#a898df" opacity=".7" d="M0 135 L220 80 L400 125 L620 70 L820 130 L1040 75 L1240 128 L1440 85 V170 H0Z"/><path fill="#fcf8f4" d="M0 160 L260 125 L520 155 L800 120 L1060 156 L1300 130 L1440 150 V170 H0Z"/></svg>
+  <div class="inner wrap">
+    <span class="tag">Open-weight AI for the outdoors</span>
+    <h1>Step outside<br>with open AI.</h1>
+    <p>Sagittarius checks the sky, picks an outing, and answers your questions with an open-weight model running on your own machine. Then it asks you to close the laptop.</p>
+    <p><a class="btn" href="#plan">Plan today's outing</a> <a class="btn alt" href="#guide">Ask the field guide</a></p>
+    <p style="font-size:15px"><span class="pill" id="aiStatus">checking local model…</span> <span id="screenClock" style="margin-left:10px;font-size:15px"></span></p>
+  </div>
+</header>
+
+<section id="plan"><div class="wrap">
+  <h2>Today's outing</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Where and when</h3>
+      <button class="btn" id="geoBtn">Use my location</button>
+      <div class="row">
+        <div><label for="lat">Latitude</label><input id="lat" type="number" step="0.01" placeholder="22.80"></div>
+        <div><label for="lon">Longitude</label><input id="lon" type="number" step="0.01" placeholder="86.18"></div>
+      </div>
+      <label for="act">What are you in the mood for?</label>
+      <select id="act"><option>a hike</option><option>a run</option><option>birding</option><option>photographing foliage</option><option>gardening</option><option>a picnic</option><option>a long walk</option></select>
+      <label for="mins">Time you have (minutes)</label>
+      <input id="mins" type="number" value="90" min="10" step="5">
+      <p><button class="btn" id="planBtn" style="margin-top:14px">Check the sky and plan</button></p>
+    </div>
+    <div class="card"><h3>Conditions</h3><div id="wx">Add a location, or fill in conditions by hand:
+      <div class="row"><div><label for="mT">Temp °C</label><input id="mT" type="number" placeholder="24"></div><div><label for="mR">Rain chance %</label><input id="mR" type="number" placeholder="20"></div></div></div>
+      <div class="out" id="planOut">Your plan appears here. Works offline using simple rules; if the local model is running, it writes a fuller plan.</div>
+      <div id="outdoor" hidden style="margin-top:16px"><div class="timer" id="oTime">0:00</div><button class="btn" id="oStop">I'm back</button></div>
+      <p><button class="btn" id="goBtn" style="margin-top:14px">Start outdoor timer</button></p>
+    </div>
+  </div>
+</div></section>
+
+<section id="guide" class="media dark" data-media="guide">
+  <button class="setbg">Set video or image</button><div class="shade"></div>
+  <div class="inner wrap">
+    <h2>Field guide, no signal needed</h2>
+    <div class="card">
+      <div class="row"><div><label for="model">Local model</label><select id="model"></select></div>
+      <div><label for="host">Ollama address</label><input id="host" value="http://localhost:11434"></div></div>
+      <div class="chat" id="chat" aria-live="polite" style="margin-top:14px"><p class="msg">Ask about a bird call you heard, a plant you found, trail safety, or what to pack.</p></div>
+      <div class="row" style="margin-top:10px"><input id="q" placeholder="e.g. Small brown bird, rising whistle, in a sal forest. What is it?" aria-label="Question"><button class="btn" id="ask" style="flex:0 0 110px">Ask</button></div>
+      <p style="font-size:14px;margin-bottom:0">Setup: install <a href="https://ollama.com">Ollama</a>, run <code>ollama pull gemma3</code>, then start it with <code>OLLAMA_ORIGINS="*" ollama serve</code> so this page may talk to it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="garden"><div class="wrap">
+  <h2>What to plant this week</h2>
+  <div class="grid">
+    <div class="card">
+      <label for="lf">Average last spring frost</label><input id="lf" type="date">
+      <label for="ff">Average first fall frost</label><input id="ff" type="date">
+      <p style="font-size:14px">No frost where you live? Leave both blank and use the season tab below.</p>
+      <label for="season">Frost-free climate: season</label>
+      <select id="season"><option value="">Use frost dates</option><option value="mon">Monsoon (Jun–Sep)</option><option value="win">Cool season (Oct–Feb)</option><option value="sum">Summer (Mar–May)</option></select>
+      <p><button class="btn" id="gBtn">Show this week's plantings</button></p>
+    </div>
+    <div class="card"><h3 id="gHead">This week</h3><div id="gOut">Pick your dates and press the button.</div></div>
+  </div>
+</div></section>
+
+<section id="journal" style="padding-top:0"><div class="wrap">
+  <h2>Field journal</h2>
+  <div class="grid">
+    <div class="card">
+      <label for="jp">Place</label><input id="jp" placeholder="Dalma ridge, east trail">
+      <label for="jn">What did you notice?</label><textarea id="jn" rows="3" placeholder="Heard a koel at 6:10. Leaves just turning."></textarea>
+      <label for="jf">Photo (optional)</label><input id="jf" type="file" accept="image/*">
+      <p><button class="btn" id="jAdd">Save entry</button></p>
+      <p style="font-size:14px">Stored only in this browser. Nothing leaves your device.</p>
+    </div>
+    <div class="card"><h3>Your entries <button class="btn alt" id="jClear" style="padding:3px 10px;font-size:13px;float:right">Clear all</button></h3><div id="jList">No entries yet. Go outside and write the first one.</div></div>
+  </div>
+</div></section>
+
+<section id="why" class="media dark" data-media="why"><button class="setbg">Set video or image</button><div class="shade"></div>
+  <div class="inner wrap">
+    <h2>Why open-weight matters here</h2>
+    <div class="grid">
+      <div class="card"><h3>Works on the ridge</h3>The model runs through Ollama on your laptop. No signal at the trailhead means no problem; the weather lookup is the only online part and is optional.</div>
+      <div class="card"><h3>Your places stay yours</h3>Where you hike, bird, or garden is personal. Prompts go to localhost, not to a server you don't control.</div>
+      <div class="card"><h3>Swap the brain</h3>The model menu lists whatever you've pulled: Gemma, Llama, Qwen. Change the system prompt or fine-tune on your regional bird list without asking anyone.</div>
+    </div>
+  </div>
+</section>
+<footer><div class="wrap"><b>Sagittarius</b> is one HTML file. Weather by Open-Meteo (free, keyless). Language model: any open-weight model served by Ollama.</div></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ---- media holders: choose a local video/image or paste a URL ---- */
+function applyMedia(box,src,type){
+  const old=box.querySelector('.mbg');if(old)old.remove();
+  const el=document.createElement(type==='video'?'video':'img');
+  el.className='mbg';el.src=src;el.alt='';
+  if(type==='video'){el.autoplay=el.muted=el.loop=el.playsInline=true;el.setAttribute('muted','');}
+  box.prepend(el);
+}
+document.querySelectorAll('.setbg').forEach(btn=>{
+  const box=btn.closest('.media'),key='bg:'+box.dataset.media;
+  const saved=store.get(key,null);if(saved&&saved.url)applyMedia(box,saved.url,saved.type);
+  btn.onclick=()=>{
+    const pick=document.createElement('input');pick.type='file';pick.accept='video/*,image/*';
+    pick.onchange=()=>{const f=pick.files[0];if(!f)return;const type=f.type.startsWith('video')?'video':'image';applyMedia(box,URL.createObjectURL(f),type)};
+    const url=prompt('Paste an image or video URL, or leave empty to choose a file from your device:');
+    if(url&&url.trim()){const u=url.trim(),type=/\.(mp4|webm|mov)(\?|$)/i.test(u)?'video':'image';applyMedia(box,u,type);store.set(key,{url:u,type});}
+    else if(url!==null)pick.click();
+  };
+});
+
+/* ---- screen clock ---- */
+const t0=Date.now();
+setInterval(()=>{const m=Math.floor((Date.now()-t0)/60000);$('screenClock').textContent=m<1?'On screen: under a minute':'On screen: '+m+' min'+(m>=10?' — time to head out':'')},5000);
+
+/* ---- Ollama ---- */
+const host=()=>$('host').value.replace(/\/$/,'');
+async function loadModels(){
+  try{
+    const r=await fetch(host()+'/api/tags');const d=await r.json();
+    const names=(d.models||[]).map(m=>m.name);
+    if(!names.length)throw 0;
+    $('model').innerHTML=names.map(n=>`<option>${n}</option>`).join('');
+    const g=names.find(n=>/gemma/i.test(n));if(g)$('model').value=g;
+    $('aiStatus').textContent='local model ready';$('aiStatus').className='pill';return true;
+  }catch(e){
+    $('model').innerHTML='<option>(none found)</option>';
+    $('aiStatus').textContent='local model offline: rules mode';$('aiStatus').className='pill off';return false;
+  }
+}
+async function llm(prompt,onTok){
+  const body={model:$('model').value,stream:true,messages:[
+    {role:'system',content:'You are a concise, practical outdoor field guide. Prioritise safety. If unsure about an identification, say so and list the features to check. Keep answers under 180 words.'},
+    {role:'user',content:prompt}]};
+  const r=await fetch(host()+'/api/chat',{method:'POST',body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('Ollama returned '+r.status);
+  const rd=r.body.getReader(),dec=new TextDecoder();let buf='',all='';
+  for(;;){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});
+    const lines=buf.split('\n');buf=lines.pop();
+    for(const l of lines){if(!l.trim())continue;try{const j=JSON.parse(l);const t=j.message?.content||'';all+=t;onTok&&onTok(all)}catch(e){}}}
+  return all;
+}
+$('ask').onclick=async()=>{
+  const q=$('q').value.trim();if(!q)return;
+  const chat=$('chat');
+  chat.insertAdjacentHTML('beforeend','<p class="msg u"></p><p class="msg"></p>');
+  const [u,a]=[...chat.querySelectorAll('.msg')].slice(-2);u.textContent=q;a.textContent='…';$('q').value='';
+  $('ask').disabled=true;
+  try{await llm(q,t=>{a.textContent=t;chat.scrollTop=chat.scrollHeight})}
+  catch(e){a.textContent='Could not reach the local model. Start Ollama with OLLAMA_ORIGINS="*" ollama serve, then reload. ('+e.message+')'}
+  $('ask').disabled=false;
+};
+$('q').addEventListener('keydown',e=>{if(e.key==='Enter')$('ask').click()});
+$('model').onfocus=loadModels;$('host').onchange=loadModels;
+
+/* ---- outing planner ---- */
+let wx=null;
+$('geoBtn').onclick=()=>{
+  if(!navigator.geolocation){alert('Location is not available. Enter coordinates by hand.');return}
+  navigator.geolocation.getCurrentPosition(p=>{$('lat').value=p.coords.latitude.toFixed(2);$('lon').value=p.coords.longitude.toFixed(2)},
+  e=>alert('Location blocked. Enter latitude and longitude by hand.'));
+};
+async function getWx(){
+  const lat=$('lat').value,lon=$('lon').value;if(!lat||!lon)return null;
+  const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation,wind_speed_10m&daily=precipitation_probability_max,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=1`;
+  const r=await fetch(u);if(!r.ok)throw new Error('weather '+r.status);const d=await r.json();
+  return{t:d.current.temperature_2m,w:d.current.wind_speed_10m,r:d.daily.precipitation_probability_max[0],uv:d.daily.uv_index_max[0],rise:d.daily.sunrise[0].slice(11),set:d.daily.sunset[0].slice(11)};
+}
+function rules(w,act,mins){
+  const tips=[];
+  if(w.r>=60)tips.push('Rain is likely. Choose a short loop near shelter, and pack a shell.');
+  else if(w.r>=30)tips.push('Some rain risk. Carry a light layer and keep it under two hours.');
+  else tips.push('Dry window. A good day to go farther.');
+  if(w.t>=32)tips.push('Hot: go within two hours of sunrise or after 4 pm, and carry 1 litre of water per hour.');
+  else if(w.t<=8)tips.push('Cold: wear layers you can shed and bring a hat.');
+  if(w.uv>=8)tips.push('UV is very high. Hat, sunscreen, shade breaks.');
+  if(w.w>=30)tips.push('Strong wind. Stay out of tall trees and exposed ridges.');
+  if(/bird/.test(act))tips.push('Birds are most active in the first two hours after sunrise'+(w.rise?' ('+w.rise+')':'')+'. Walk slowly and stop to listen.');
+  if(/run/.test(act))tips.push('Keep effort easy for the first 10 minutes; plan an out-and-back of about '+Math.round(mins/6)+' km.');
+  if(/hike/.test(act))tips.push('Plan about '+Math.max(1,Math.round(mins/25))+' km of trail at a steady pace and turn back at half your time.');
+  if(w.set)tips.push('Sunset is '+w.set+'. Be back with 30 minutes of light spare.');
+  return tips.join('\n• ').replace(/^/,'• ');
+}
+$('planBtn').onclick=async()=>{
+  const out=$('planOut'),act=$('act').value,mins=+$('mins').value||60;
+  $('planBtn').disabled=true;out.textContent='Checking the sky…';
+  try{
+    wx=await getWx();
+    if(!wx){const t=+($('mT')?.value||25),r=+($('mR')?.value||20);wx={t,r,w:10,uv:6}}
+    $('wx').innerHTML=`<p><b>${wx.t}°C</b>, wind ${wx.w} km/h, rain chance ${wx.r}%${wx.uv!=null?', UV '+wx.uv:''}${wx.rise?'<br>Sunrise '+wx.rise+' · Sunset '+wx.set:''}</p>`;
+    out.textContent=rules(wx,act,mins);
+  }catch(e){
+    out.textContent='Could not fetch weather ('+e.message+'). Enter temperature and rain chance by hand and try again.';
+    $('planBtn').disabled=false;return;
+  }
+  $('planBtn').disabled=false;
+  if(await loadModels()){
+    const base=out.textContent;out.textContent=base+'\n\nLocal model is writing a fuller plan…';
+    try{await llm(`Plan ${act} for ${mins} minutes. Weather: ${wx.t}°C, rain chance ${wx.r}%, wind ${wx.w} km/h. Give a short plan, what to bring, and one thing to notice outdoors.`,t=>out.textContent=base+'\n\n'+t)}
+    catch(e){out.textContent=base}
+  }
+};
+let oStart=0,oInt;
+$('goBtn').onclick=()=>{oStart=Date.now();$('outdoor').hidden=false;$('goBtn').hidden=true;
+  oInt=setInterval(()=>{const s=Math.floor((Date.now()-oStart)/1000);$('oTime').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},1000)};
+$('oStop').onclick=()=>{clearInterval(oInt);const m=Math.round((Date.now()-oStart)/60000);
+  const log=store.get('outlog',[]);log.push({d:new Date().toISOString(),m});store.set('outlog',log);
+  $('outdoor').innerHTML=`<b>${m} minutes outside logged.</b> Total this device: ${log.reduce((a,b)=>a+b.m,0)} min. Add what you saw to the journal below.`};
+
+/* ---- garden planner (offline) ---- */
+// offsets in weeks relative to last spring frost (negative = before)
+const SPRING=[['Peas',-6,-2],['Spinach',-6,0],['Lettuce',-4,4],['Carrots',-3,6],['Potatoes',-3,0],['Broccoli (transplant)',-2,2],['Tomatoes (transplant)',1,4],['Beans',1,8],['Squash',1,6],['Cucumbers',1,6],['Basil',2,8]];
+// [crop, far, near]: sow when frost is between -far and -near weeks away (negative = after frost)
+const FALL=[['Garlic',-0,4],['Spinach',-8,-4],['Lettuce',-8,-3],['Radish',-8,-3],['Kale',-10,-6],['Carrots',-12,-8],['Beets',-10,-6],['Broccoli (transplant)',-12,-8]];
+const MEDIT={mon:[['Okra',0,99],['Cucumber',0,99],['Bottle gourd',0,99],['Ridge gourd',0,99],['Maize',0,99],['Cowpea',0,99]],win:[['Spinach',0,99],['Peas',0,99],['Cauliflower',0,99],['Cabbage',0,99],['Carrot',0,99],['Radish',0,99],['Coriander',0,99],['Mustard greens',0,99]],sum:[['Okra',0,99],['Amaranth',0,99],['Watermelon',0,99],['Pumpkin',0,99],['Basil',0,99],['Cluster beans',0,99]]};
+const wk=(a,b)=>Math.round((a-b)/6048e5);
+$('gBtn').onclick=()=>{
+  const now=new Date(),s=$('season').value,lf=$('lf').value,ff=$('ff').value,o=$('gOut');
+  store.set('frost',{lf,ff,s});
+  if(s){o.innerHTML=MEDIT[s].map(c=>`<div class="crop"><span>${c[0]}</span><span class="pill">sow now</span></div>`).join('');$('gHead').textContent='Season plan';return}
+  if(!lf&&!ff){o.textContent='Enter at least one frost date, or choose a season.';return}
+  const rows=[];
+  if(lf){const d=new Date(lf);d.setFullYear(now.getFullYear());const w=wk(now,d);
+    SPRING.forEach(c=>{if(w>=c[1]&&w<=c[2])rows.push([c[0],'spring window, '+(w<0?Math.abs(w)+' wk before':w+' wk after')+' last frost'])})}
+  if(ff){const d=new Date(ff);d.setFullYear(now.getFullYear());const w=wk(d,now);
+    FALL.forEach(c=>{if(w<=-c[1]&&w>=-c[2])rows.push([c[0],w>=0?'fall window, '+w+' wk to first frost':'fall window, '+(-w)+' wk after first frost'])})}
+  $('gHead').textContent='This week ('+now.toDateString().slice(4,10)+')';
+  o.innerHTML=rows.length?rows.map(r=>`<div class="crop"><span>${r[0]}</span><small>${r[1]}</small></div>`).join(''):'Nothing is in its sowing window this week. Good week to weed, mulch, and compost.';
+};
+const fz=store.get('frost',null);if(fz){$('lf').value=fz.lf||'';$('ff').value=fz.ff||'';$('season').value=fz.s||''}
+
+/* ---- journal ---- */
+function shrink(file){return new Promise(res=>{const img=new Image();img.onload=()=>{const s=Math.min(1,320/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*s;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.7))};img.onerror=()=>res('');img.src=URL.createObjectURL(file)})}
+function renderJ(){
+  const list=store.get('journal',[]);
+  $('jList').innerHTML=list.length?list.slice().reverse().map(e=>`<div class="j">${e.img?`<img src="${e.img}" alt="">`:''}<div><b></b><br><small>${new Date(e.d).toLocaleString()}</small><div class="n"></div></div></div>`).join(''):'No entries yet. Go outside and write the first one.';
+  const els=[...$('jList').querySelectorAll('.j')];
+  list.slice().reverse().forEach((e,i)=>{els[i].querySelector('b').textContent=e.p||'Somewhere outside';els[i].querySelector('.n').textContent=e.n});
+}
+$('jAdd').onclick=async()=>{
+  const n=$('jn').value.trim();if(!n&&!$('jf').files[0]){alert('Write a note or add a photo first.');return}
+  const img=$('jf').files[0]?await shrink($('jf').files[0]):'';
+  const list=store.get('journal',[]);list.push({d:new Date().toISOString(),p:$('jp').value.trim(),n,img});
+  store.set('journal',list);$('jn').value='';$('jf').value='';renderJ();
+};
+$('jClear').onclick=()=>{if(confirm('Delete all journal entries on this device?')){store.set('journal',[]);renderJ()}};
+renderJ();loadModels();
+/* ---- sidebar: collapse, mobile menu, active section ---- */
+(function(){
+  const b=document.body;
+  if(store.get('sideMin',false))b.classList.add('min');
+  $('collapse').onclick=()=>{b.classList.toggle('min');store.set('sideMin',b.classList.contains('min'))};
+  $('menuBtn').onclick=()=>b.classList.toggle('open');
+  document.querySelectorAll('.menu a').forEach(a=>a.addEventListener('click',()=>b.classList.remove('open')));
+  const links={};document.querySelectorAll('.menu a').forEach(a=>links[a.dataset.s]=a);
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){Object.values(links).forEach(l=>l.classList.remove('on'));links[e.target.id]&&links[e.target.id].classList.add('on')}}),{rootMargin:'-40% 0px -55% 0px'});
+  ['top','plan','guide','garden','journal','why'].forEach(id=>{const el=$(id);el&&io.observe(el)});
+})();
+
+</script>
+</body>
+</html>
