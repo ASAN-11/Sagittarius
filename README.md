@@ -73,7 +73,7 @@ If Ollama is not running, the planner and garden tools still work using built-in
 
 - **Badge says "rules mode"**: Ollama is not running, no model is pulled, or `OLLAMA_ORIGINS` was not set before starting it. Restart Ollama with the command above and reload the page.
 - **Weather will not load**: check your internet connection and that latitude and longitude are filled in, or enter temperature and rain chance by hand.
-- **Location blocked**: some browsers restrict geolocation on `file://` pages. Type coordinates, or serve the folder with `python3 -m http.server` and open `http://localhost:8000/sagittarius.html`.
+- **Location blocked**: some browsers restrict geolocation on `file://` pages. Type coordinates, or serve the folder with `python3 -m http.server 8000` and open `http://localhost:8000/sagittarius.html`.
 - **Bird or plant identification**: the model works from your text description only. Treat answers as a starting point and confirm with a field guide before eating or touching anything.
 
 ## Tech
